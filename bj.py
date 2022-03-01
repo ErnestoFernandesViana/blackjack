@@ -61,7 +61,7 @@ class BlackJackGame():
     def give_cards(player:Player, deck:Deck, number):
         player.give_cards(deck.pull_cards(number))
 
-    def check_odds(self, deck:Deck, player:Player, n_attemps):
+    def check_odds(self, deck:Deck, player:Player, n_attemps = 5000):
         """ check the odds of now going above 21 """
         blown = 0
         for x in range(n_attemps):
@@ -71,7 +71,56 @@ class BlackJackGame():
             self.give_cards(player_copy, deck_copy, 1)
             if self.check_if_blown(player_copy.hand):
                 blown += 1
-        return ((n_attemps - blown)/n_attemps)*100
+        return int(((n_attemps - blown)/n_attemps)*100)
+
+
+    def check_odds_covering_dealer(self, deck:Deck, player:Player, dealer:Dealer, n_attemps = 5000):
+        covered = 0
+        dealer_points = self.check_points(dealer.hand)
+        for _ in range(n_attemps):
+            deck_copy = copy.deepcopy(deck)
+            player_copy = copy.deepcopy(player)
+            deck_copy.shuffle()
+            self.give_cards(player_copy, deck_copy, 1)
+            if dealer_points <= self.check_points(player_copy.hand) < 22:
+                covered += 1 
+        return int((covered / n_attemps)*100)
+
+    def odds_hitting_21(self, deck:Deck, player:Player, n = 5000):
+        hit =  0
+        for _ in range(n):
+            deck_copy = copy.deepcopy(deck)
+            deck_copy.shuffle()
+            player_copy = copy.deepcopy(player)
+            self.give_cards(player_copy, deck_copy, 1)
+            if self.check_points(player_copy.hand) == 21:
+                hit += 1
+        return int((hit/n)*100)
+
+    def check_total_odds(self, deck:Deck, n = 10000):
+        blown = 0 
+        hit_21 = 0 
+        cover_dealer = 0
+        dealer_points = self.check_points(self.dealer.hand)
+        for _ in range(n):
+            deck_copy = copy.deepcopy(deck)
+            deck_copy.shuffle()
+            player_copy = copy.deepcopy(self.player)
+            self.give_cards(player_copy, deck_copy, 1)
+            if self.check_if_blown(player_copy.hand):
+                blown += 1
+            if dealer_points <= self.check_points(player_copy.hand) < 22:
+                cover_dealer += 1
+            if self.check_points(player_copy.hand) == 21:
+                hit_21 += 1
+        prob_n_blown = int(((n - blown)/n)*100)
+        prob_cover_dealer = int((cover_dealer / n)*100)
+        prob_hit_21 = int((hit_21/n)*100)
+        return prob_n_blown, prob_cover_dealer, prob_hit_21
+
+            
+
+
 
 
 
@@ -83,11 +132,14 @@ if __name__ == '__main__':
     g1 = BlackJackGame(ernesto, dealer)
     deck = Deck()
     deck.shuffle()
+    g1.give_cards(dealer, deck, 2)
     g1.give_cards(ernesto, deck, 2)
     g1.print_player_status()
+    g1.print_dealer_status()
     print(g1.check_odds(deck, ernesto, 10000))
-    print(g1.check_odds(deck, ernesto, 10000))
-    print(g1.check_odds(deck, ernesto, 30000))
+    print(g1.check_odds_covering_dealer(deck, ernesto, dealer))
+    print(g1.odds_hitting_21(deck, ernesto))
+    print(g1.check_total_odds(deck))
 
 
 
