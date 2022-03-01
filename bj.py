@@ -85,5 +85,9 @@ if __name__ == '__main__':
     deck.shuffle()
     g1.give_cards(ernesto, deck, 2)
     g1.print_player_status()
-    print(g1.check_odds(deck, ernesto, 2000))
+    print(g1.check_odds(deck, ernesto, 10000))
+    print(g1.check_odds(deck, ernesto, 10000))
+    print(g1.check_odds(deck, ernesto, 30000))
+
+
 
