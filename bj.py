@@ -118,8 +118,16 @@ class BlackJackGame():
         prob_hit_21 = int((hit_21/n)*100)
         return prob_n_blown, prob_cover_dealer, prob_hit_21
 
-            
-
+    
+    def prob_displayer(self, deck:Deck):
+        prob_n_blown, prob_cover_dealer, prob_hit_21 = self.check_total_odds(deck)
+        print('Probabilities are:')
+        str1 = 'Chances of not blowing above 21: '.ljust(35)+'{}%'.format(prob_n_blown).rjust(15)
+        str2 = 'Chances of coverting dealer: '.ljust(35) + '{}%'.format(prob_cover_dealer).rjust(15)
+        str3 = 'Chances of hitting 21: '.ljust(35) + '{}%'.format(prob_hit_21).rjust(15)
+        str_list = [str1, str2, str3]
+        full_str = '\n'.join(str_list)
+        print(full_str)
 
 
 
@@ -136,10 +144,10 @@ if __name__ == '__main__':
     g1.give_cards(ernesto, deck, 2)
     g1.print_player_status()
     g1.print_dealer_status()
-    print(g1.check_odds(deck, ernesto, 10000))
-    print(g1.check_odds_covering_dealer(deck, ernesto, dealer))
-    print(g1.odds_hitting_21(deck, ernesto))
     print(g1.check_total_odds(deck))
-
-
+    g1.prob_displayer(deck)
+""" print(g1.check_odds(deck, ernesto, 10000))
+    print(g1.check_odds_covering_dealer(deck, ernesto, dealer))
+    print(g1.odds_hitting_21(deck, ernesto)) """
+    
 

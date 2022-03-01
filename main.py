@@ -60,11 +60,9 @@ while True:
         while True:
             p = 0,0
             if game.check_points(player.hand) > 11:
-                odds = input('Want to know the odds of not going above 21 for $5?(y/n)')
+                odds = input('Want some probabilities for $5?(y/n)')
                 if odds == 'y':
-                    odds_result = game.check_odds(deck, player)
-                    print('The odds of hitting 21 or below are {}%.'.format(int(odds_result)))
-                    print(game.check_total_odds(deck))
+                    game.prob_displayer(deck)
                     player.lose_money(5)
             answer = input('Would you like to hit or stay?(h/s)')
             if answer == 'h':
@@ -83,7 +81,7 @@ while True:
                     time.sleep(1.5)
                     if game.check_if_blown(dealer.hand):
                         print('Dealer blew above 21')
-                        time.sleep(3)
+                        time.sleep(2)
                         player.win_money(bet*2)
                         break
                     continue
